@@ -4,7 +4,9 @@
  */
 package com.fernandez.automatizacionenviodocumentos.sistemaenviodocumentosporwhatsapp;
 
+import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -38,7 +40,8 @@ public class SenderApp extends javax.swing.JFrame {
         nombreCustomerTxt = new javax.swing.JTextField();
         nroTelefonoTxt = new javax.swing.JTextField();
         selectComprobanteBtn = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        filePathTxt = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -46,7 +49,7 @@ public class SenderApp extends javax.swing.JFrame {
         jLabel1.setText("Hola, bienvenido al sistema de envio de mensajes de whatsapp");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
-        jLabel2.setText("Ingrese el nomnbre del cliente:");
+        jLabel2.setText("Ingrese el nombre del cliente:");
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, -1, -1));
 
         jLabel3.setText("Ingrese el numero de telefono:");
@@ -61,8 +64,13 @@ public class SenderApp extends javax.swing.JFrame {
         selectComprobanteBtn.addActionListener(this::selectComprobanteBtnActionPerformed);
         getContentPane().add(selectComprobanteBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 100, 170, -1));
 
-        jTextField1.addActionListener(this::jTextField1ActionPerformed);
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 130, 170, -1));
+        filePathTxt.setEditable(false);
+        filePathTxt.addActionListener(this::filePathTxtActionPerformed);
+        getContentPane().add(filePathTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 340, -1));
+
+        jButton1.setText("Enviar");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 170, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -70,13 +78,55 @@ public class SenderApp extends javax.swing.JFrame {
     private void selectComprobanteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectComprobanteBtnActionPerformed
         // TODO add your handling code here:
         JFileChooser fc = new JFileChooser();
-        fc.showOpenDialog(fc);
+        String userHome = System.getProperty("user.home");
+        File downloadsDir = new File(userHome, "Downloads");
+        
+        if(downloadsDir.exists() && downloadsDir.isDirectory()){
+            fc.setCurrentDirectory(downloadsDir);
+        }
+        else{
+            fc.setCurrentDirectory(new File(userHome));
+        }
+        
+        int response = fc.showOpenDialog(fc);
+        
+        if(response == JFileChooser.APPROVE_OPTION){
+            File file = new File(fc.getSelectedFile().getPath());
+            filePathTxt.setText(file.getPath());
+        }
+        
+        
         
     }//GEN-LAST:event_selectComprobanteBtnActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void filePathTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filePathTxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_filePathTxtActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        String nombreCliente = nombreCustomerTxt.getText().trim();
+        String numeroCliente = nroTelefonoTxt.getText().trim();
+        String filePath = filePathTxt.getText();
+        
+        if(nombreCliente.isEmpty() || numeroCliente.isEmpty() || filePath.isEmpty()){
+            JOptionPane.showMessageDialog(null,"Completa todos los campos!", "ERROR_CAMPOS_VACIOS",JOptionPane.ERROR_MESSAGE);
+        }
+        
+        File pdfComprobante = new File (filePath);
+        
+        try{
+            WhatsappSender sender = new WhatsappSender();
+            sender.sendMessage(numeroCliente, nombreCliente, pdfComprobante);
+            sender.close();
+            
+            JOptionPane.showMessageDialog(null, "Mensaje enviado correctamente","ENVIO_EXITOSO",JOptionPane.OK_OPTION);
+        }
+        catch (Exception e){
+            JOptionPane.showMessageDialog(null, "Error al enviar: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -104,11 +154,12 @@ public class SenderApp extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField filePathTxt;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField nombreCustomerTxt;
     private javax.swing.JTextField nroTelefonoTxt;
     private javax.swing.JButton selectComprobanteBtn;
