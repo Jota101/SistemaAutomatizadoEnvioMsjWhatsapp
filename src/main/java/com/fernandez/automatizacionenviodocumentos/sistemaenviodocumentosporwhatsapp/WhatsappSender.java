@@ -12,6 +12,7 @@ import org.openqa.selenium.interactions.Actions;
 
 import java.io.File;
 import java.time.Duration;
+import javax.swing.JOptionPane;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 /**
@@ -55,29 +56,67 @@ public class WhatsappSender {
         Thread.sleep(2000);
 
         // 2. Click en el botón de adjuntar
-        try{
+        /*try{
             WebElement attachButton = driver.findElement(By.cssSelector("span[data-icon='clip']"));
-           attachButton.click();
+           //attachButton.click();
            System.out.println("Se procede a clickear en el icono de clip");
         }
         catch(Exception e){
             System.out.println("no funciono con span...intentando con button");
             try{
                 WebElement attachButton = driver.findElement(By.cssSelector("button[aria-label=['Adjuntar']"));
-                attachButton.click();
+                //attachButton.click();
             }
             catch(Exception e1){
                 System.out.println("no funciono con div");
+                try{
+                    System.out.println("Procediento a realizar el intento de span 'span[data-icon='attach-document']'");
+                    WebElement attachButton = new WebDriverWait(driver, Duration.ofSeconds(10))
+                    .until(ExpectedConditions.elementToBeClickable(
+                            By.cssSelector("span[data-icon='attach-document']")
+                    ));
+                    //documentButton.click();
+                }
+                catch(Exception e2){
+                    JOptionPane.showMessageDialog(null, "No se logro clickear sobre la opcion de Adjuntar Documento");
+                }
             }
+        }*/
+        
+        
+        /*try{
+            WebElement attachButton = driver.findElement(By.cssSelector("button[aria-label=['Adjuntar']"));
+            //attachButton.click();
         }
-       
+        catch(Exception e){
+            System.out.println("No se llego a hacer click al boton de Adjuntar");
+        }*/
+        WebElement attachButton = driver.findElement(By.cssSelector("button[aria-label=['Adjuntar']"));
+        attachButton.click();
+        
+        
+        //Hacer click a la opcion de Documento de la lista
+        System.out.println("Procediento a realizar el intento de span 'span[data-icon='attach-document']'");
+        WebElement documentButton = new WebDriverWait(driver, Duration.ofSeconds(10))
+            .until(ExpectedConditions.elementToBeClickable(
+                            By.cssSelector("span[data-icon='document-filled-refreshed']")));
+        
+        documentButton.click();
+        
 
         Thread.sleep(1000);
 
         // 3. Input oculto para seleccionar archivo
         
         //WebElement fileInput = driver.findElement(By.cssSelector("input[type='file']"));
-        WebElement fileInput = driver.findElement(By.cssSelector("li[tabindex='0'][role='button']"));
+        //WebElement fileInput = driver.findElement(By.cssSelector("li[tabindex='0'][role='button']"));
+        //fileInput.sendKeys(pdfFile.getAbsolutePath());
+        
+        WebElement fileInput = new WebDriverWait(driver, Duration.ofSeconds(10))
+        .until(ExpectedConditions.presenceOfElementLocated(
+            By.cssSelector("input[type='file']"))
+        );
+
         fileInput.sendKeys(pdfFile.getAbsolutePath());
         
 
