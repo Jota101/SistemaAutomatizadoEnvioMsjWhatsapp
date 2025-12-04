@@ -91,7 +91,7 @@ public class WhatsappSender {
         catch(Exception e){
             System.out.println("No se llego a hacer click al boton de Adjuntar");
         }*/
-        WebElement attachButton = driver.findElement(By.cssSelector("button[aria-label=['Adjuntar']"));
+        WebElement attachButton = driver.findElement(By.cssSelector("button[aria-label='Adjuntar']"));
         attachButton.click();
         
         
@@ -99,7 +99,7 @@ public class WhatsappSender {
         System.out.println("Procediento a realizar el intento de span 'span[data-icon='attach-document']'");
         WebElement documentButton = new WebDriverWait(driver, Duration.ofSeconds(10))
             .until(ExpectedConditions.elementToBeClickable(
-                            By.cssSelector("span[data-icon='document-filled-refreshed']")));
+                            By.cssSelector("span[class='xdod15v x14ug900 x6ikm8r x10wlt62 xlyipyv xuxw1ft']")));
         
         documentButton.click();
         
